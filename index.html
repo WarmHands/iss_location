@@ -1,24 +1,43 @@
 <!DOCTYPE html>
 
-<html lang="ru">
+<html lang="en">
 
 <head>
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="style.css"> 
-	<title>Местоположение МКС</title>
+	<title>Watching ISS</title>
 
 </head>
 <body>
-	<div class="content">
-		<div class="header"></div>
-		<div class="center">
-			<div id="map"></div>
-			<div id="pillist"></div>
+	<header>
+		<div class="container" id="top">
+			<div id="issLocation">ISS location</div>
+			<div id="dateTime">
+				<div id="utcTime">
+					
+				</div>
+				<div id="dayMonthYear"></div>
+
+			</div>
 		</div>
-
-	</div>
-
-
+	</header>
+	
+	<main>
+		<div class="container" id="main">
+			
+			<div id="map">Google Map</div>
+			
+			<div id="crew">
+				<div id="crewList">
+					<h1>Crew list</h1>
+				</div>
+				<div id="crewCount">
+					<h1>Crew Count</h1>
+				</div>
+			</div>
+		</div>
+	</main>
+	
 	<script src="scripts.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjq_dGgSimLbMtvjbgung6bMxbUq7ieuo&callback=initMap"
 	async defer></script>
