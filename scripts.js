@@ -1,4 +1,13 @@
 //Инициализируем гугл карту с местоположение МКС с частотой обновления 10 секунд
+var latitude;
+var longitude;
+
+
+var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+var isscrew = 0; // Счетчик для экипажа МКС
+
 function initMap() {
 	// Указываем карту в объявленный <div id="map"></div> в html
 	var map = new google.maps.Map(document.getElementById("map"), {
@@ -17,11 +26,14 @@ function initMap() {
 	});
 	// Обновленяем карту и маркер
 	updateMap(map, marker)
-	getISSCrew()
+	updateInfo()
+	// getISSCrew() // Получаем список космонавтов
 	//Указываем частоту обновления
 	setInterval( () => {
-		updateMap(map, marker)
-	}, 2000)
+		updateMap(map, marker);
+		console.log(getFixedMinutes());
+		updateInfo();
+	}, 10000)
 
 	// Функция для обновления данных
 	function updateMap(map, marker) {
@@ -44,8 +56,8 @@ function getISSLocation() {
 		let location = {}
 		if(XHR.readyState === 4 && XHR.status === 200) {
 
-			let latitude  = JSON.parse(XHR.responseText)["iss_position"].latitude
-			let longitude = JSON.parse(XHR.responseText)["iss_position"].longitude
+			latitude  = JSON.parse(XHR.responseText)["iss_position"].latitude
+			longitude = JSON.parse(XHR.responseText)["iss_position"].longitude
 
 			location = {
 				lat: Number(latitude),
@@ -63,39 +75,20 @@ function getISSLocation() {
 }
 
 
-function getISSCrew() {
-	var personName = ""
-	return new Promise( (resolve, reject) => {
-	let XHR = new XMLHttpRequest()
-
-	XHR.open('GET', 'http://api.open-notify.org/astros.json')
-	XHR.onload = function () {
-		let crew = {}
-		if(XHR.readyState === 4 && XHR.status === 200) {
-
-			let data  = JSON.parse(XHR.responseText).people
-			// console.log(data);
-			// console.log(data[0]);
-			for (person in data) {
-				if (data[person].craft == "ISS"){
-					// console.log(data[person].name);
-
-					let pilot_name = document.createElement('li');
-					personName = data[person].name;
-					pilot_name.innerHTML = "<div class='crew_container'></div>";
-					document.getElementsByClassName("crew_container").innerHTML = personName;
-					// console.log(pilot_name.innerHTML )
-					pillist.prepend(pilot_name);
-				}
-			}
-
-			resolve(data)
-		} else {
-			reject(XHR.statusText)
-		}
+function getFixedMinutes() // Чтобы избежать всяких 20:2, т.к. значения от getUTCMinutes() находятся в диапазоне 0-59
+{
+	let d = new Date();
+	if (d.getUTCMinutes() < 10)
+	{
+		return "0" + d.getUTCMinutes();
+	} else {
+		return d.getUTCMinutes();
 	}
-
-	XHR.send()
-
-	})
 }
+
+function updateInfo(){
+	let d = new Date();
+	document.getElementById("issLocation").innerHTML = "Longtitude: " + longitude +", Latitude: " + latitude; // Отображаем координаты
+	document.getElementById("utcTime").innerHTML = "Current UTC time: " + d.getUTCHours() + ":" + getFixedMinutes(); // Текущее UTC время
+	document.getElementById("dayMonthYear").innerHTML = days[d.getUTCDay()] + ", " + d.getUTCDate() + " " + months[d.getUTCMonth()] + " " + d.getUTCFullYear(); // Год
+};
