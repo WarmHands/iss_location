@@ -86,22 +86,10 @@ function getISSCrew() {
 		if(XHR.readyState === 4 && XHR.status === 200) {
 
 			let data  = JSON.parse(XHR.responseText).people
-			// console.log(data);
-			// console.log(data[0]);
+
 			for (person in data) {
 				if (data[person].craft == "ISS"){
-					console.log(data[person].name);
-
-					//console.log(crewMembers);
-
 					$('#crewList').append('<li>'+data[person].name+'</li>');
-
-					// let pilot_name = document.createElement('li');
-					// personName = data[person].name;
-					// pilot_name.innerHTML = "<div class='crew_container'></div>";
-					// document.getElementsByClassName("crew_container").innerHTML = personName;
-					// // console.log(pilot_name.innerHTML )
-					// pillist.prepend(pilot_name);
 				}
 			}
 
@@ -134,7 +122,4 @@ function updateInfo(){
 	$('#issLocation').html("Longtitude: " + longitude +", Latitude: " + latitude);
 	$('#utcTime').html("Current UTC time: " + d.getUTCHours() + ":" + getFixedMinutes());
 	$('#dayMonthYear').html(days[d.getUTCDay()] + ", " + d.getUTCDate() + " " + months[d.getUTCMonth()] + " " + d.getUTCFullYear());
-	//document.getElementById("issLocation").innerHTML = "Longtitude: " + longitude +", Latitude: " + latitude; // Отображаем координаты
-	//document.getElementById("utcTime").innerHTML = "Current UTC time: " + d.getUTCHours() + ":" + getFixedMinutes(); // Текущее UTC время
-	//document.getElementById("dayMonthYear").innerHTML = days[d.getUTCDay()] + ", " + d.getUTCDate() + " " + months[d.getUTCMonth()] + " " + d.getUTCFullYear(); // Год
 };
