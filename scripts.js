@@ -27,7 +27,7 @@ function initMap() {
 	// Обновленяем карту и маркер
 	updateMap(map, marker)
 	updateInfo()
-	// getISSCrew() // Получаем список космонавтов
+	getISSCrew() // Получаем список космонавтов
 	//Указываем частоту обновления
 	setInterval( () => {
 		updateMap(map, marker);
@@ -75,6 +75,49 @@ function getISSLocation() {
 }
 
 
+function getISSCrew() {
+	var personName = ""
+	return new Promise( (resolve, reject) => {
+	let XHR = new XMLHttpRequest()
+
+	XHR.open('GET', 'http://api.open-notify.org/astros.json')
+	XHR.onload = function () {
+		let crew = {}
+		if(XHR.readyState === 4 && XHR.status === 200) {
+
+			let data  = JSON.parse(XHR.responseText).people
+			// console.log(data);
+			// console.log(data[0]);
+			for (person in data) {
+				if (data[person].craft == "ISS"){
+					console.log(data[person].name);
+
+					//console.log(crewMembers);
+
+					$('#crewList').append('<li>'+data[person].name+'</li>');
+
+					// let pilot_name = document.createElement('li');
+					// personName = data[person].name;
+					// pilot_name.innerHTML = "<div class='crew_container'></div>";
+					// document.getElementsByClassName("crew_container").innerHTML = personName;
+					// // console.log(pilot_name.innerHTML )
+					// pillist.prepend(pilot_name);
+				}
+			}
+
+			resolve(data)
+		} else {
+			reject(XHR.statusText)
+		}
+	}
+
+	XHR.send()
+
+	})
+}
+
+
+
 function getFixedMinutes() // Чтобы избежать всяких 20:2, т.к. значения от getUTCMinutes() находятся в диапазоне 0-59
 {
 	let d = new Date();
@@ -88,7 +131,10 @@ function getFixedMinutes() // Чтобы избежать всяких 20:2, т.
 
 function updateInfo(){
 	let d = new Date();
-	document.getElementById("issLocation").innerHTML = "Longtitude: " + longitude +", Latitude: " + latitude; // Отображаем координаты
-	document.getElementById("utcTime").innerHTML = "Current UTC time: " + d.getUTCHours() + ":" + getFixedMinutes(); // Текущее UTC время
-	document.getElementById("dayMonthYear").innerHTML = days[d.getUTCDay()] + ", " + d.getUTCDate() + " " + months[d.getUTCMonth()] + " " + d.getUTCFullYear(); // Год
+	$('#issLocation').html("Longtitude: " + longitude +", Latitude: " + latitude);
+	$('#utcTime').html("Current UTC time: " + d.getUTCHours() + ":" + getFixedMinutes());
+	$('#dayMonthYear').html(days[d.getUTCDay()] + ", " + d.getUTCDate() + " " + months[d.getUTCMonth()] + " " + d.getUTCFullYear());
+	//document.getElementById("issLocation").innerHTML = "Longtitude: " + longitude +", Latitude: " + latitude; // Отображаем координаты
+	//document.getElementById("utcTime").innerHTML = "Current UTC time: " + d.getUTCHours() + ":" + getFixedMinutes(); // Текущее UTC время
+	//document.getElementById("dayMonthYear").innerHTML = days[d.getUTCDay()] + ", " + d.getUTCDate() + " " + months[d.getUTCMonth()] + " " + d.getUTCFullYear(); // Год
 };
